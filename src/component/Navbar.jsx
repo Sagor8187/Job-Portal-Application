@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -9,13 +8,13 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-[#0d0d0d] text-white px-4 md:px-8 py-4 flex items-center justify-between border-b border-gray-800/40 relative z-50">
+    <nav className="w-full sticky top-0 z-50 bg-[#0d0d0d]/95 backdrop-blur-md text-white px-4 md:px-8 py-4 flex items-center justify-between border-b border-gray-800/40">
 
       {/* Logo */}
       <div className="flex items-center gap-2 cursor-pointer">
         <div className="w-9 h-9 bg-gradient-to-tr from-[#7B2CBF] to-[#9D4EDD] rounded-xl flex items-center justify-center shadow-lg">
           <span className="text-white font-extrabold text-xl select-none">
-            !&gt;
+            
           </span>
         </div>
 
@@ -32,24 +31,15 @@ export default function Navbar() {
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-6">
         <div className="bg-[#18181b]/60 border border-gray-800/50 rounded-full px-5 py-2 flex items-center gap-6 text-[14px] text-gray-400 font-medium">
-          <Link
-            href="/jobs"
-            className="hover:text-white transition-colors"
-          >
+          <Link href="/jobs" className="hover:text-white transition-colors">
             Browse Jobs
           </Link>
 
-          <Link
-            href="/company"
-            className="hover:text-white transition-colors"
-          >
+          <Link href="/company" className="hover:text-white transition-colors">
             Company
           </Link>
 
-          <Link
-            href="/pricing"
-            className="hover:text-white transition-colors"
-          >
+          <Link href="/pricing" className="hover:text-white transition-colors">
             Pricing
           </Link>
 
@@ -75,11 +65,7 @@ export default function Navbar() {
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden text-gray-300 hover:text-white transition-colors"
       >
-        {isOpen ? (
-          <FaTimes size={24} />
-        ) : (
-          <FaBars size={24} />
-        )}
+        {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </button>
 
       {/* Mobile Menu */}
@@ -123,10 +109,7 @@ export default function Navbar() {
             Sign In
           </Link>
 
-          <Link
-            href="/get-started"
-            onClick={() => setIsOpen(false)}
-          >
+          <Link href="/get-started" onClick={() => setIsOpen(false)}>
             <button className="w-full bg-white text-black font-semibold text-sm py-3 rounded-xl hover:bg-gray-100 transition-all">
               Get Started
             </button>
@@ -136,4 +119,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
