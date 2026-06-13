@@ -4,15 +4,12 @@ import { BiBriefcaseAlt2 } from 'react-icons/bi';
 
 export default function HeroSection() {
   return (
-    <div className="relative min-h-[600px] w-full bg-black text-white flex flex-col items-center justify-center px-4 overflow-hidden select-none">
-      
-      {/* Subtle Background Stars/Glow Effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05),transparent_70%)] pointer-events-none" />
+    <div className="relative w-full bg-transparent text-white flex flex-col items-center justify-center px-4 pt-24 pb-12 overflow-hidden select-none">
       
       <div className="relative z-10 max-w-4xl w-full text-center flex flex-col items-center">
         
         {/* Top Floating Badge */}
-        <div className="inline-flex items-center gap-2 bg-[#161616] border border-neutral-800 rounded-full px-4 py-1.5 text-xs font-medium text-neutral-400 tracking-wider mb-8 uppercase backdrop-blur-sm shadow-inner">
+        <div className="inline-flex items-center gap-2 bg-[#161616]/90 border border-neutral-800 rounded-full px-4 py-1.5 text-xs font-medium text-neutral-400 tracking-wider mb-8 uppercase backdrop-blur-sm shadow-inner">
           <BiBriefcaseAlt2 className="w-4 h-4 text-orange-500" />
           <span><strong className="text-white">50,000+</strong> New Jobs This Month</span>
         </div>
@@ -28,7 +25,7 @@ export default function HeroSection() {
         </p>
 
         {/* Responsive Search Container */}
-        <div className="w-full max-w-3xl bg-[#111111] border border-neutral-800/80 rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-2xl shadow-purple-500/5">
+        <div className="w-full max-w-3xl bg-[#111111]/90 border border-neutral-800/80 rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-2xl shadow-purple-500/5 backdrop-blur-md">
           
           {/* Job Title / Skill Input */}
           <div className="flex-1 flex items-center gap-3 px-4 py-3 md:py-1">
