@@ -2,31 +2,37 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaRocket } from "react-icons/fa";
+import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const {
+    data: session,
+    isPending, // ✅ গুরুত্বপূর্ণ
+  } = authClient.useSession();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+  };
+
   return (
     <nav className="w-full sticky top-0 z-50 bg-[#0d0d0d]/95 backdrop-blur-md text-white px-4 md:px-8 py-4 flex items-center justify-between border-b border-gray-800/40">
-
+      
       {/* Logo */}
-      <div className="flex items-center gap-2 cursor-pointer">
-        <div className="w-9 h-9 bg-gradient-to-tr from-[#7B2CBF] to-[#9D4EDD] rounded-xl flex items-center justify-center shadow-lg">
-          <span className="text-white font-extrabold text-xl select-none">
-            
-          </span>
+      <Link href="/" className="flex items-center gap-2 cursor-pointer">
+        <div className="w-10 h-10 bg-gradient-to-tr from-[#7B2CBF] to-[#9D4EDD] rounded-xl flex items-center justify-center shadow-lg">
+          <FaRocket className="text-white text-lg" />
         </div>
 
-        <div className="flex flex-col leading-tight font-sans tracking-tight">
-          <span className="text-[17px] font-bold text-white">
-            Programming
-          </span>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[17px] font-bold text-white">Career</span>
           <span className="text-[17px] font-semibold text-gray-300 -mt-1">
-            Hero
+            Launch
           </span>
         </div>
-      </div>
+      </Link>
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-6">
@@ -45,22 +51,50 @@ export default function Navbar() {
 
           <div className="h-4 w-[1px] bg-gray-700/60"></div>
 
-          <Link
-            href="/signin"
-            className="text-[#5b51d8] hover:text-[#6c63ff] font-semibold transition-colors"
-          >
-            Sign In
-          </Link>
+          {/* ✅ FIX: loading state handle */}
+          {isPending ? (
+            <span className="text-gray-500">Loading...</span>
+          ) : !session ? (
+            <Link
+              href="/signin"
+              className="text-[#5b51d8] hover:text-[#6c63ff] font-semibold transition-colors"
+            >
+              Sign In
+            </Link>
+          ) : (
+            <button
+              onClick={handleSignOut}
+              className="text-red-400 hover:text-red-500 font-semibold transition-colors"
+            >
+              Sign Out
+            </button>
+          )}
         </div>
 
-        <Link href="/get-started">
-          <button className="bg-white text-black font-semibold text-[14px] px-5 py-2.5 rounded-xl hover:bg-gray-100 active:scale-95 transition-all shadow-sm">
-            Get Started
-          </button>
-        </Link>
+        {/* CTA / Profile */}
+        {isPending ? null : !session ? (
+          <Link href="/get-started">
+            <button className="bg-white text-black font-semibold text-[14px] px-5 py-2.5 rounded-xl hover:bg-gray-100 active:scale-95 transition-all shadow-sm">
+              Get Started
+            </button>
+          </Link>
+        ) : (
+          <Link href="/profile">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <img
+                src={
+                  session?.user?.image ||
+                  "https://ui-avatars.com/api/?name=User"
+                }
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover border border-gray-700"
+              />
+            </div>
+          </Link>
+        )}
       </div>
 
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden text-gray-300 hover:text-white transition-colors"
@@ -101,19 +135,59 @@ export default function Navbar() {
             Pricing
           </Link>
 
-          <Link
-            href="/signin"
-            onClick={() => setIsOpen(false)}
-            className="text-[#5b51d8] hover:text-[#6c63ff] font-semibold text-base py-2"
-          >
-            Sign In
-          </Link>
+          {isPending ? null : !session ? (
+            <>
+              <Link
+                href="/signin"
+                onClick={() => setIsOpen(false)}
+                className="text-[#5b51d8] hover:text-[#6c63ff] font-semibold text-base py-2"
+              >
+                Sign In
+              </Link>
 
-          <Link href="/get-started" onClick={() => setIsOpen(false)}>
-            <button className="w-full bg-white text-black font-semibold text-sm py-3 rounded-xl hover:bg-gray-100 transition-all">
-              Get Started
-            </button>
-          </Link>
+              <Link href="/get-started" onClick={() => setIsOpen(false)}>
+                <button className="w-full bg-white text-black font-semibold text-sm py-3 rounded-xl hover:bg-gray-100 transition-all">
+                  Get Started
+                </button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/profile"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 py-2 border-b border-gray-900"
+              >
+                <img
+                  src={
+                    session?.user?.image ||
+                    "https://ui-avatars.com/api/?name=User"
+                  }
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full object-cover border border-gray-700"
+                />
+
+                <div>
+                  <p className="text-white text-sm font-medium">
+                    {session?.user?.name}
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    {session?.user?.email}
+                  </p>
+                </div>
+              </Link>
+
+              <button
+                onClick={async () => {
+                  await handleSignOut();
+                  setIsOpen(false);
+                }}
+                className="w-full bg-red-500 text-white font-semibold text-sm py-3 rounded-xl hover:bg-red-600 transition-all"
+              >
+                Sign Out
+              </button>
+            </>
+          )}
         </div>
       </div>
     </nav>
