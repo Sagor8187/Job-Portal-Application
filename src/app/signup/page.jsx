@@ -13,6 +13,8 @@ import {
   Input,
   Label,
   TextField,
+  Radio,
+  RadioGroup,
 } from "@heroui/react";
 
 import { FaEye, FaEyeSlash, FaCheck } from "react-icons/fa";
@@ -21,6 +23,7 @@ import { authClient } from "@/lib/auth-client";
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const onSubmit = async (e) => {
@@ -31,11 +34,12 @@ export default function SignupForm() {
 
     setLoading(true);
 
-    const { data: result, error } = await authClient.signUp.email({
+    const { error } = await authClient.signUp.email({
       name: data.username,
       email: data.email,
       password: data.password,
       image: data.imageUrl,
+      role: data.role,
       callbackURL: "/signin",
     });
 
@@ -52,23 +56,20 @@ export default function SignupForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4">
-
-      {/* Card */}
       <div className="w-full max-w-md bg-[#0f0f0f] border border-neutral-800 rounded-2xl p-6 shadow-2xl shadow-purple-500/10">
-
         {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-semibold text-white">
             Create Account
           </h2>
+
           <p className="text-sm text-neutral-400 mt-1">
             Join and start your journey
           </p>
         </div>
 
-        {/* FORM */}
+        {/* Form */}
         <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
-
           {/* Username */}
           <TextField isRequired name="username">
             <Label className="text-white">Username</Label>
@@ -76,7 +77,7 @@ export default function SignupForm() {
             <FieldError />
           </TextField>
 
-          {/* Image URL */}
+          {/* Profile Image */}
           <TextField
             isRequired
             name="imageUrl"
@@ -113,7 +114,41 @@ export default function SignupForm() {
             <FieldError />
           </TextField>
 
-          {/* PASSWORD */}
+          {/* Role */}
+          <div className="flex flex-col gap-3">
+            <Label className="text-white">Select Role</Label>
+
+            <RadioGroup
+              name="role"
+              defaultValue="seeker"
+              orientation="horizontal"
+              className="flex gap-4"
+            >
+              <Radio value="seeker">
+                <Radio.Control>
+                  <Radio.Indicator />
+                </Radio.Control>
+
+                <Radio.Content>
+                  <Label className="text-white">Seeker</Label>
+                  <Description>Looking for jobs</Description>
+                </Radio.Content>
+              </Radio>
+
+              <Radio value="recruiter">
+                <Radio.Control>
+                  <Radio.Indicator />
+                </Radio.Control>
+
+                <Radio.Content>
+                  <Label className="text-white">Recruiter</Label>
+                  <Description>Posting jobs</Description>
+                </Radio.Content>
+              </Radio>
+            </RadioGroup>
+          </div>
+
+          {/* Password */}
           <TextField
             isRequired
             name="password"
@@ -122,12 +157,15 @@ export default function SignupForm() {
               if (value.length < 8) {
                 return "At least 8 characters required";
               }
+
               if (!/[A-Z]/.test(value)) {
                 return "Add at least 1 uppercase letter";
               }
+
               if (!/[0-9]/.test(value)) {
                 return "Add at least 1 number";
               }
+
               return null;
             }}
           >
@@ -153,13 +191,15 @@ export default function SignupForm() {
               </button>
             </div>
 
-            <Description>8+ chars, 1 uppercase, 1 number</Description>
+            <Description>
+              8+ characters, 1 uppercase letter, 1 number
+            </Description>
+
             <FieldError />
           </TextField>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
-
+          <div className="flex gap-3 pt-2 w-full">
             <Button
               type="submit"
               disabled={loading}
@@ -167,7 +207,7 @@ export default function SignupForm() {
             >
               {loading ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Loading...
                 </>
               ) : (
@@ -178,15 +218,17 @@ export default function SignupForm() {
               )}
             </Button>
 
-            <Button type="reset" variant="secondary" className="w-full">
+            <Button
+              type="reset"
+              variant="secondary"
+              className="w-full"
+            >
               Reset
             </Button>
-
           </div>
-
         </Form>
 
-        {/* SIGN IN LINK */}
+        {/* Sign In Link */}
         <p className="text-center text-sm text-neutral-400 mt-6">
           Already have an account?{" "}
           <Link
@@ -196,7 +238,6 @@ export default function SignupForm() {
             Sign in
           </Link>
         </p>
-
       </div>
     </div>
   );
