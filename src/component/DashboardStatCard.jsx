@@ -2,14 +2,14 @@ import React from "react";
 
 const DashboardStatCard = ({ stats }) => {
   return (
-    <div className=" grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-4 ">
+    <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-4">
       {stats.map((item) => {
         const Icon = item.icon;
 
         return (
           <div
             key={item.id}
-            className="bg-[#18181b] border w-full border-[#27272a] rounded-xl p-5  flex flex-col justify-between transition-all duration-200 hover:border-zinc-700"
+            className=" bg-[#18181b] border border-[#27272a] rounded-xl p-5 flex flex-col justify-between transition-all duration-200 hover:border-zinc-700"
           >
             <div className="w-fit rounded-lg bg-[#27272a] p-2">
               <Icon className="size-5 text-zinc-300" />

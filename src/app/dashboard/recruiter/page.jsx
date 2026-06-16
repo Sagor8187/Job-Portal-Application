@@ -30,8 +30,8 @@ export default function Page() {
     },
   ];
 
-  return (
-    <div className="p-6">
+     return (
+    <div className="p-6 w-full">
       <DashboardStatCard stats={statsData} />
     </div>
   );
