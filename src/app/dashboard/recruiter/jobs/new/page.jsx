@@ -2,87 +2,53 @@
 
 import React, { useState } from "react";
 import {
-  Input,
   Select,
   ListBox,
-  TextArea,
   Button,
   Switch,
 } from "@heroui/react";
 
 import { FiMapPin, FiBriefcase, FiDollarSign, FiCalendar } from "react-icons/fi";
+import { createjob } from "@/lib/actions/jobs";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 export default function CreateJobForm() {
-  // Main form data state
-  const [formData, setFormData] = useState({
-    jobTitle: "",
-    jobCategory: "",
-    jobType: "",
-    minSalary: "",
-    maxSalary: "",
-    currency: "USD",
-    location: "",
-    isRemote: false,
-    applicationDeadline: "",
-    responsibilities: "",
-    requirements: "",
-    benefits: "",
-  });
-
+  // Retain minimal UI states needed for interaction logic
+  const [isRemote, setIsRemote] = useState(false);
+  const [jobCategory, setJobCategory] = useState("");
+  const [jobType, setJobType] = useState("");
+  const [currency, setCurrency] = useState("USD");
+  
   // State to store validation error messages
   const [errors, setErrors] = useState({});
 
-  // Handler for standard text, number, and date input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    
-    // Clear error message instantly when user starts typing
+  // Clear errors instantly on user input
+  const handleInputChange = (e) => {
+    const { name } = e.target;
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  // Handler for custom Select dropdown triggers
-  const handleSelect = (key, field) => {
-    const value = Array.from(key)[0];
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    
-    // Clear targeted selection error state
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
-  };
-
-  // Handler for the boolean toggle (Remote Switch)
-  const handleToggle = (checked) => {
-    setFormData((prev) => {
-      const updated = { ...prev, isRemote: checked, location: checked ? "" : prev.location };
-      if (checked && errors.location) {
-        setErrors((errPrev) => ({ ...errPrev, location: "" }));
-      }
-      return updated;
-    });
-  };
-
-  // Complete validation logic
-  const validateForm = () => {
+  // Complete validation logic utilizing the extracted form entries object
+  const validateForm = (data) => {
     let tempErrors = {};
 
-    if (!formData.jobTitle.trim()) tempErrors.jobTitle = "Job title is required";
-    if (!formData.jobCategory) tempErrors.jobCategory = "Please select a job category";
-    if (!formData.jobType) tempErrors.jobType = "Please select a job type";
+    if (!data.jobTitle?.trim()) tempErrors.jobTitle = "Job title is required";
+    if (!data.jobCategory) tempErrors.jobCategory = "Please select a job category";
+    if (!data.jobType) tempErrors.jobType = "Please select a job type";
     
-    const minSal = parseFloat(formData.minSalary);
-    const maxSal = parseFloat(formData.maxSalary);
+    const minSal = parseFloat(data.minSalary);
+    const maxSal = parseFloat(data.maxSalary);
 
-    if (!formData.minSalary) {
+    if (!data.minSalary) {
       tempErrors.minSalary = "Minimum salary is required";
     } else if (isNaN(minSal) || minSal < 0) {
       tempErrors.minSalary = "Must be a valid positive number";
     }
 
-    if (!formData.maxSalary) {
+    if (!data.maxSalary) {
       tempErrors.maxSalary = "Maximum salary is required";
     } else if (isNaN(maxSal) || maxSal < 0) {
       tempErrors.maxSalary = "Must be a valid positive number";
@@ -90,14 +56,16 @@ export default function CreateJobForm() {
       tempErrors.maxSalary = "Cannot be less than minimum salary";
     }
 
-    if (!formData.isRemote && !formData.location.trim()) {
+    // Switch returns "on" string or undefined/empty in standard FormData
+    const remoteChecked = data.isRemote === "on";
+    if (!remoteChecked && !data.location?.trim()) {
       tempErrors.location = "Location is required when not remote";
     }
 
-    if (!formData.applicationDeadline) {
+    if (!data.applicationDeadline) {
       tempErrors.applicationDeadline = "Deadline is required";
     } else {
-      const selectedDate = new Date(formData.applicationDeadline);
+      const selectedDate = new Date(data.applicationDeadline);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (selectedDate < today) {
@@ -105,15 +73,15 @@ export default function CreateJobForm() {
       }
     }
 
-    if (!formData.responsibilities.trim()) {
+    if (!data.responsibilities?.trim()) {
       tempErrors.responsibilities = "Core responsibilities are required";
-    } else if (formData.responsibilities.trim().length < 20) {
+    } else if (data.responsibilities.trim().length < 20) {
       tempErrors.responsibilities = "Must be at least 20 characters long";
     }
 
-    if (!formData.requirements.trim()) {
+    if (!data.requirements?.trim()) {
       tempErrors.requirements = "Job requirements are required";
-    } else if (formData.requirements.trim().length < 20) {
+    } else if (data.requirements.trim().length < 20) {
       tempErrors.requirements = "Must be at least 20 characters long";
     }
 
@@ -121,14 +89,38 @@ export default function CreateJobForm() {
     return Object.keys(tempErrors).length === 0;
   };
 
-  // Submission Pipeline
-  const handleSubmit = (e) => {
+  // Submission Pipeline via Object.fromEntries
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Job Post Created Successfully:", formData);
+    
+    const formDataInstance = new FormData(e.currentTarget);
+    const rawData = Object.fromEntries(formDataInstance);
+
+    // Format the final data structure cleanly
+    const structuredData = {
+      ...rawData,
+      isRemote: rawData.isRemote === "on",
+      location: rawData.isRemote === "on" ? "" : rawData.location,
+    };
+    const res = await createjob(structuredData)
+    if(res.result?.insertedId){
+   toast.success("Post created Successfully")
+   redirect("/dashboard/recruiter")
+}
+
+    if (validateForm(structuredData)) {
+      console.log("Job Post Created Successfully:", structuredData);
     } else {
       console.log("Form check failed. Correct inline field errors.");
     }
+  };
+
+  const handleReset = () => {
+    setIsRemote(false);
+    setJobCategory("");
+    setJobType("");
+    setCurrency("USD");
+    setErrors({});
   };
 
   return (
@@ -155,8 +147,7 @@ export default function CreateJobForm() {
                 <input
                   id="jobTitle"
                   name="jobTitle"
-                  value={formData.jobTitle}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   placeholder="e.g. Senior Full-Stack Engineer"
                   className="bg-transparent w-full text-white placeholder:text-gray-500 text-sm focus:outline-none"
                 />
@@ -168,11 +159,16 @@ export default function CreateJobForm() {
             <div className="flex flex-col gap-1.5">
               <label id="category-label" className="text-sm font-medium text-gray-300">Job Category</label>
               <Select
+                name="jobCategory"
                 className="w-full"
                 placeholder="Select category"
                 aria-labelledby="category-label"
-                selectedKeys={formData.jobCategory ? new Set([formData.jobCategory]) : new Set()}
-                onSelectionChange={(key) => handleSelect(key, "jobCategory")}
+                selectedKeys={jobCategory ? new Set([jobCategory]) : new Set()}
+                onSelectionChange={(key) => {
+                  const val = Array.from(key)[0] || "";
+                  setJobCategory(val);
+                  setErrors((p) => ({ ...p, jobCategory: "" }));
+                }}
                 variant="bordered"
                 classNames={{
                   trigger: `!bg-black border-[#333333] hover:border-gray-500 focus-within:!border-gray-500 rounded-lg h-11 ${errors.jobCategory ? 'border-danger' : ''}`,
@@ -199,11 +195,16 @@ export default function CreateJobForm() {
             <div className="flex flex-col gap-1.5">
               <label id="jobtype-label" className="text-sm font-medium text-gray-300">Job Type</label>
               <Select
+                name="jobType"
                 className="w-full"
                 placeholder="Select type"
                 aria-labelledby="jobtype-label"
-                selectedKeys={formData.jobType ? new Set([formData.jobType]) : new Set()}
-                onSelectionChange={(key) => handleSelect(key, "jobType")}
+                selectedKeys={jobType ? new Set([jobType]) : new Set()}
+                onSelectionChange={(key) => {
+                  const val = Array.from(key)[0] || "";
+                  setJobType(val);
+                  setErrors((p) => ({ ...p, jobType: "" }));
+                }}
                 variant="bordered"
                 classNames={{
                   trigger: `!bg-black border-[#333333] hover:border-gray-500 focus-within:!border-gray-500 rounded-lg h-11 ${errors.jobType ? 'border-danger' : ''}`,
@@ -241,8 +242,7 @@ export default function CreateJobForm() {
                       id="minSalary"
                       name="minSalary"
                       type="number"
-                      value={formData.minSalary}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                       placeholder="50000"
                       className="bg-transparent w-full text-white placeholder:text-gray-600 text-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
@@ -259,8 +259,7 @@ export default function CreateJobForm() {
                       id="maxSalary"
                       name="maxSalary"
                       type="number"
-                      value={formData.maxSalary}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                       placeholder="80000"
                       className="bg-transparent w-full text-white placeholder:text-gray-600 text-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
@@ -272,9 +271,10 @@ export default function CreateJobForm() {
                 <div className="flex flex-col gap-1">
                   <label id="currency-label" className="text-xs text-gray-400">Currency</label>
                   <Select
+                    name="currency"
                     aria-labelledby="currency-label"
-                    selectedKeys={new Set([formData.currency])}
-                    onSelectionChange={(key) => handleSelect(key, "currency")}
+                    selectedKeys={new Set([currency])}
+                    onSelectionChange={(key) => setCurrency(Array.from(key)[0] || "USD")}
                     variant="bordered"
                     classNames={{
                       trigger: "!bg-black border-[#333333] rounded-lg h-10",
@@ -305,23 +305,26 @@ export default function CreateJobForm() {
                 <div className="flex items-center gap-2 bg-black px-2.5 py-1 rounded-md border border-[#2b2b2b]">
                   <span className="text-xs text-gray-400">Fully Remote</span>
                   <Switch
+                    name="isRemote"
                     size="sm"
                     color="default"
-                    isSelected={formData.isRemote}
-                    onValueChange={handleToggle}
+                    isSelected={isRemote}
+                    onValueChange={(checked) => {
+                      setIsRemote(checked);
+                      if (checked) setErrors((p) => ({ ...p, location: "" }));
+                    }}
                     aria-label="Toggle Remote Location"
                   />
                 </div>
               </div>
-              <div className={`flex items-center gap-2 border rounded-lg h-11 px-3 ${formData.isRemote ? '!bg-[#222222] opacity-40 border-[#333333]' : 'bg-black border-[#333333] hover:border-gray-500 focus-within:!border-gray-500'} ${errors.location ? 'border-danger' : ''}`}>
+              <div className={`flex items-center gap-2 border rounded-lg h-11 px-3 ${isRemote ? '!bg-[#222222] opacity-40 border-[#333333]' : 'bg-black border-[#333333] hover:border-gray-500 focus-within:!border-gray-500'} ${errors.location ? 'border-danger' : ''}`}>
                 <FiMapPin className="text-white min-w-[16px] shrink-0" />
                 <input
                   id="location"
                   name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  disabled={formData.isRemote}
-                  placeholder={formData.isRemote ? "Configured as Global Remote" : "e.g. Dhaka, Bangladesh"}
+                  onChange={handleInputChange}
+                  disabled={isRemote}
+                  placeholder={isRemote ? "Configured as Global Remote" : "e.g. Dhaka, Bangladesh"}
                   className="bg-transparent w-full text-white placeholder:text-gray-500 text-sm focus:outline-none disabled:cursor-not-allowed"
                 />
               </div>
@@ -337,8 +340,7 @@ export default function CreateJobForm() {
                   id="applicationDeadline"
                   name="applicationDeadline"
                   type="date"
-                  value={formData.applicationDeadline}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   className="bg-transparent w-full text-white text-sm focus:outline-none [color-scheme:dark]"
                 />
               </div>
@@ -355,8 +357,7 @@ export default function CreateJobForm() {
               <textarea
                 id="responsibilities"
                 name="responsibilities"
-                value={formData.responsibilities}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 rows={4}
                 placeholder="Outline core expectations, day-to-day operations..."
                 className={`bg-black border rounded-lg p-3 text-white placeholder:text-gray-500 text-sm focus:outline-none resize-none ${errors.responsibilities ? 'border-danger' : 'border-[#333333] hover:border-gray-500 focus:focus-within:border-gray-500'}`}
@@ -370,8 +371,7 @@ export default function CreateJobForm() {
               <textarea
                 id="requirements"
                 name="requirements"
-                value={formData.requirements}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 rows={4}
                 placeholder="Experience metrics, tech stacks requested..."
                 className={`bg-black border rounded-lg p-3 text-white placeholder:text-gray-500 text-sm focus:outline-none resize-none ${errors.requirements ? 'border-danger' : 'border-[#333333] hover:border-gray-500 focus:focus-within:border-gray-500'}`}
@@ -388,8 +388,6 @@ export default function CreateJobForm() {
               <textarea
                 id="benefits"
                 name="benefits"
-                value={formData.benefits}
-                onChange={handleChange}
                 rows={3}
                 placeholder="Health coverage, PTO, flexible working parameters..."
                 className="bg-black border border-[#333333] hover:border-gray-500 focus:focus-within:border-gray-500 rounded-lg p-3 text-white placeholder:text-gray-500 text-sm focus:outline-none resize-none"
@@ -400,14 +398,10 @@ export default function CreateJobForm() {
           {/* BUTTONS */}
           <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-[#2a2a2a]">
             <Button 
-              type="button"
+              type="reset"
               variant="bordered"
               className="border-[#333333] text-white hover:bg-[#222222] rounded-lg font-medium px-5 w-full sm:w-auto h-10"
-              onClick={() => setFormData({
-                jobTitle: "", jobCategory: "", jobType: "", minSalary: "", maxSalary: "",
-                currency: "USD", location: "", isRemote: false, applicationDeadline: "",
-                responsibilities: "", requirements: "", benefits: ""
-              })}
+              onClick={handleReset}
             >
               Reset
             </Button>
