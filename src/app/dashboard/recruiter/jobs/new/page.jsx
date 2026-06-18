@@ -106,7 +106,7 @@ export default function CreateJobForm() {
     const res = await createjob(structuredData);
     if (res.result?.insertedId) {
       toast.success("Post created Successfully");
-      redirect("/dashboard/recruiter");
+      redirect("/dashboard/recruiter/jobs");
     }
 
     if (validateForm(structuredData)) {

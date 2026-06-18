@@ -8,30 +8,31 @@ import {
   Person,
 } from "@gravity-ui/icons";
 import { Button, Drawer } from "@heroui/react";
+import Link from "next/link";
 
 export function Dashboard() {
-  const navItems = [
-    { icon: House, label: "Home" },
-    { icon: Magnifier, label: "Search" },
-    { icon: Bell, label: "Notifications" },
-    { icon: Envelope, label: "Messages" },
-    { icon: Person, label: "Profile" },
-    { icon: Gear, label: "Settings" },
-  ];
+const navItems = [
+  { icon: House, label: "Home", href: "/" },
+  { icon: Magnifier, label: "Jobs", href: "/dashboard/recruiter/jobs" },
+  { icon: Bell, label: "Create a Job", href: "/dashboard/recruiter/jobs/new" },
+  { icon: Envelope, label: "Messages", href: "/dashboard/messages" },
+  { icon: Person, label: "Profile", href: "/dashboard/profile" },
+  { icon: Gear, label: "Settings", href: "/dashboard/settings" },
+];
 
 const navside = (
-  <nav className="flex flex-col gap-1 h-screen bg-black text-white p-4 w-64 border-r border-zinc-800">
-    {navItems.map((item) => (
-      <button
-        key={item.label}
-        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white transition-colors hover:bg-zinc-800"
-        type="button"
-      >
-        <item.icon className="size-5 text-gray-400" />
-        {item.label}
-      </button>
-    ))}
-  </nav>
+<nav className="flex flex-col gap-1 h-screen bg-black text-white p-4 w-64 border-r border-zinc-800">
+      {navItems.map((item) => (
+        <Link
+          key={item.label}
+          href={item.href} // Points to the specific page path
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white transition-colors hover:bg-zinc-800"
+        >
+          <item.icon className="size-5 text-gray-400" />
+          {item.label}
+        </Link>
+      ))}
+    </nav>
 );
 
   return (
