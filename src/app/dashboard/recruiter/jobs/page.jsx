@@ -19,7 +19,7 @@ export default async function page() {
       <div className="w-full overflow-x-auto">
         
         {/* Removed global classNames prop to eliminate the React DOM error */}
-        <Table aria-label="Jobs Table" className="max-w-full">
+        <Table aria-label="Jobs Table" className="max-w-full p-4">
           <Table.ScrollContainer className="bg-black border border-neutral-800 rounded-xl overflow-hidden">
             <Table.Content className="min-w-[800px] bg-black text-white">
 
@@ -34,7 +34,7 @@ export default async function page() {
               {/* Table Body styling */}
               <Table.Body>
                 {data.map((job) => (
-                  <Table.Row key={job._id} className="border-b border-neutral-900 hover:bg-neutral-900/50 transition-colors">
+                  <Table.Row key={job._id} className="border-b  border-neutral-900 hover:bg-neutral-900/50 transition-colors">
                     
                     <Table.Cell className="py-4 px-4">
                       <div className="flex flex-col">
@@ -66,10 +66,10 @@ export default async function page() {
                         <Button isIconOnly size="sm" variant="light" className="text-neutral-400 hover:text-white">
                           <FiEye />
                         </Button>
-                        <Button isIconOnly size="sm" variant="light" className="text-neutral-400 hover:text-white">
+                        <Button isIconOnly size="sm" variant="secondary" className="text-neutral-400 hover:text-white">
                           <FiEdit />
                         </Button>
-                        <Button isIconOnly size="sm" color="danger" variant="light">
+                        <Button isIconOnly size="sm" color="danger" variant="danger">
                           <FiTrash2 />
                         </Button>
                       </div>

@@ -12,9 +12,10 @@ import Link from "next/link";
 
 export function Dashboard() {
 const navItems = [
-  { icon: House, label: "Home", href: "/" },
+  { icon: House, label: "Home", href: "/dashboard/recruiter" },
   { icon: Magnifier, label: "Jobs", href: "/dashboard/recruiter/jobs" },
-  { icon: Bell, label: "Create a Job", href: "/dashboard/recruiter/jobs/new" },
+  { icon: Bell, label: "Post Job", href: "/dashboard/recruiter/jobs/new" },
+  { icon: Bell, label: "Company profile", href: "/dashboard/recruiter/company" },
   { icon: Envelope, label: "Messages", href: "/dashboard/messages" },
   { icon: Person, label: "Profile", href: "/dashboard/profile" },
   { icon: Gear, label: "Settings", href: "/dashboard/settings" },
