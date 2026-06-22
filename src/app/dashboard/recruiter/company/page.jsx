@@ -2,13 +2,8 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FiPlusCircle, FiUploadCloud } from "react-icons/fi"; // FiUploadCloud আইকন যুক্ত করা হয়েছে
-import {
-  Modal,
-  Button,
-  Select,
-  ListBox,
-} from "@heroui/react";
+import { FiPlusCircle, FiUploadCloud } from "react-icons/fi";
+import { Modal, Button, Select, ListBox } from "@heroui/react";
 
 export default function CompanyRegistration() {
   const [industry, setIndustry] = useState("");
@@ -19,15 +14,15 @@ export default function CompanyRegistration() {
   const companyExists = false;
   if (companyExists) return null;
 
-  // লোগো সিলেক্ট করার সময় সাইজ ভ্যালিডেশন (Max 5MB)
+  // লোগো সিলেক্ট করার সময় সাইজ ভ্যালিডেশন (Max 5MB)
   const handleLogoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB কে বাইটে রূপান্তর
+    const maxSizeInBytes = 5 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
       toast.error("File size must be less than 5MB");
-      e.target.value = ""; // ইনপুট ফিল্ডটি রিসেট করার জন্য
+      e.target.value = "";
       setLogo(null);
       return;
     }
@@ -45,7 +40,7 @@ export default function CompanyRegistration() {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await res.json();
@@ -75,16 +70,16 @@ export default function CompanyRegistration() {
 
       const companyData = {
         ...rawData,
-        industry,
-        employeeRange,
+        industry, // স্টেট থেকে পুরো ভ্যালু চলে যাবে
+        employeeRange, // স্টেট থেকে পুরো ভ্যালু চলে যাবে
         logo: logoUrl,
         createdAt: new Date(),
       };
 
       console.log(companyData);
-      
+
       toast.success("Company Registered Successfully");
-      if (closeForm) closeForm(); 
+      if (closeForm) closeForm();
     } catch (error) {
       console.error(error);
       toast.error("Registration Failed");
@@ -117,12 +112,10 @@ export default function CompanyRegistration() {
       <Modal.Backdrop>
         <Modal.Container size="cover">
           <Modal.Dialog className="w-full max-w-4xl bg-[#18181b] border border-[#27272a] text-white rounded-xl">
-            
             {({ close }) => (
               <form onSubmit={(e) => handleSubmit(e, close)}>
-                
                 <Modal.CloseTrigger />
-                
+
                 <Modal.Header className="border-b border-[#27272a]">
                   <div>
                     <Modal.Heading className="text-xl font-semibold text-white">
@@ -136,7 +129,6 @@ export default function CompanyRegistration() {
 
                 <Modal.Body className="p-6">
                   <div className="grid md:grid-cols-2 gap-5">
-                    
                     {/* Company Name */}
                     <div>
                       <label className="text-sm text-gray-300 mb-2 block">
@@ -157,23 +149,40 @@ export default function CompanyRegistration() {
                       </label>
                       <Select
                         placeholder="Select Industry"
-                        selectedKeys={industry ? new Set([industry]) : new Set()}
-                        onSelectionChange={(keys) =>
-                          setIndustry(Array.from(keys)[0] || "")
-                        }
+                        value={industry} // সরাসরি সিলেক্ট কম্পোনেন্টে ভ্যালু কন্ট্রোল
+                        onChange={(val) => setIndustry(val ? String(val) : "")} // কাস্টম ইভেন্ট হ্যান্ডলার
                       >
                         <Select.Trigger className="bg-black border border-[#333333] h-11 rounded-lg">
-                          <Select.Value />
+                          <Select.Value>
+                            {industry || "Select Industry"}
+                          </Select.Value>
                           <Select.Indicator />
                         </Select.Trigger>
 
                         <Select.Popover>
+                          {/* ListBox এর ভেতর থেকে onSelectionChange বা selectedKeys এর ঝামেলা বাদ দেওয়া হয়েছে */}
                           <ListBox className="bg-[#18181b] text-white">
-                            <ListBox.Item id="Technology">Technology</ListBox.Item>
-                            <ListBox.Item id="Healthcare">Healthcare</ListBox.Item>
-                            <ListBox.Item id="Finance">Finance</ListBox.Item>
-                            <ListBox.Item id="Education">Education</ListBox.Item>
-                            <ListBox.Item id="Marketing">Marketing</ListBox.Item>
+                            <ListBox.Item
+                              id="Technology"
+                              textValue="Technology"
+                            >
+                              Technology
+                            </ListBox.Item>
+                            <ListBox.Item
+                              id="Healthcare"
+                              textValue="Healthcare"
+                            >
+                              Healthcare
+                            </ListBox.Item>
+                            <ListBox.Item id="Finance" textValue="Finance">
+                              Finance
+                            </ListBox.Item>
+                            <ListBox.Item id="Education" textValue="Education">
+                              Education
+                            </ListBox.Item>
+                            <ListBox.Item id="Marketing" textValue="Marketing">
+                              Marketing
+                            </ListBox.Item>
                           </ListBox>
                         </Select.Popover>
                       </Select>
@@ -211,29 +220,56 @@ export default function CompanyRegistration() {
                       </label>
                       <Select
                         placeholder="Employee Range"
-                        selectedKeys={employeeRange ? new Set([employeeRange]) : new Set()}
-                        onSelectionChange={(keys) =>
-                          setEmployeeRange(Array.from(keys)[0] || "")
+                        value={employeeRange} // সরাসরি সিলেক্ট কম্পোনেন্টে ভ্যালু কন্ট্রোল
+                        onChange={(val) =>
+                          setEmployeeRange(val ? String(val) : "")
                         }
                       >
                         <Select.Trigger className="bg-black border border-[#333333] h-11 rounded-lg">
-                          <Select.Value />
+                          <Select.Value>
+                            {employeeRange || "Employee Range"}
+                          </Select.Value>
                           <Select.Indicator />
                         </Select.Trigger>
 
                         <Select.Popover>
-                          <ListBox>
-                            <ListBox.Item id="1-10 employees">1-10 employees</ListBox.Item>
-                            <ListBox.Item id="11-50 employees">11-50 employees</ListBox.Item>
-                            <ListBox.Item id="51-200 employees">51-200 employees</ListBox.Item>
-                            <ListBox.Item id="201-500 employees">201-500 employees</ListBox.Item>
-                            <ListBox.Item id="500+ employees">500+ employees</ListBox.Item>
+                          <ListBox className="bg-[#18181b] text-white">
+                            <ListBox.Item
+                              id="1-10 employees"
+                              textValue="1-10 employees"
+                            >
+                              1-10 employees
+                            </ListBox.Item>
+                            <ListBox.Item
+                              id="11-50 employees"
+                              textValue="11-50 employees"
+                            >
+                              11-50 employees
+                            </ListBox.Item>
+                            <ListBox.Item
+                              id="51-200 employees"
+                              textValue="51-200 employees"
+                            >
+                              51-200 employees
+                            </ListBox.Item>
+                            <ListBox.Item
+                              id="201-500 employees"
+                              textValue="201-500 employees"
+                            >
+                              201-500 employees
+                            </ListBox.Item>
+                            <ListBox.Item
+                              id="500+ employees"
+                              textValue="500+ employees"
+                            >
+                              500+ employees
+                            </ListBox.Item>
                           </ListBox>
                         </Select.Popover>
                       </Select>
                     </div>
 
-                    {/* Logo Upload Field (আইকন এবং সাইজ ভ্যালিডেশন সহ) */}
+                    {/* Logo Upload Field */}
                     <div>
                       <label className="text-sm text-gray-300 mb-2 block">
                         Company Logo (Max 5MB)
@@ -253,7 +289,6 @@ export default function CompanyRegistration() {
                         )}
                       </div>
                     </div>
-
                   </div>
 
                   {/* Description */}
@@ -271,21 +306,14 @@ export default function CompanyRegistration() {
                 </Modal.Body>
 
                 <Modal.Footer className="border-t border-[#27272a]">
-                  <Button
-                    slot="close"
-                    variant="secondary"
-                  >
+                  <Button slot="close" variant="secondary">
                     Cancel
                   </Button>
 
-                  <Button
-                    type="submit"
-                    isLoading={loading}
-                  >
+                  <Button type="submit" isLoading={loading}>
                     Register Company
                   </Button>
                 </Modal.Footer>
-
               </form>
             )}
           </Modal.Dialog>
