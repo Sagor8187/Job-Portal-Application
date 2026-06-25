@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FiPlusCircle, FiUploadCloud, FiEdit3, FiGlobe, FiMapPin, FiUsers, FiBriefcase } from "react-icons/fi";
 import { Modal, Button, Select, ListBox } from "@heroui/react";
+import { createcompany } from "@/lib/core/company";
 
 export default function CompanyRegistration() {
   // useDisclosure এর বদলে প্লেইন রিয়্যাক্ট স্টেট ব্যবহার করা হলো
@@ -81,8 +82,13 @@ export default function CompanyRegistration() {
 
       setCompany(companyData);
 
-      toast.success("Company Registered Successfully");
-      closeForm(); 
+      const payload =await createcompany(companyData)
+      // console.log(payload)
+        if (payload.success){
+           toast.success("Company Registered Successfully");
+      closeForm();
+        }
+      
     } catch (error) {
       console.error(error);
       toast.error("Registration Failed");
