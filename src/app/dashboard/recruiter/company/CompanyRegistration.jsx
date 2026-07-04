@@ -6,12 +6,12 @@ import { FiPlusCircle, FiUploadCloud, FiEdit3, FiGlobe, FiMapPin, FiUsers, FiBri
 import { Modal, Button, Select, ListBox } from "@heroui/react";
 import { createcompany } from "@/lib/core/company";
 
-export default function CompanyRegistration({user}) {
+export default function CompanyRegistration({user,RecruiterCompany}) {
   // useDisclosure এর বদলে প্লেইন রিয়্যাক্ট স্টেট ব্যবহার করা হলো
   const [isOpen, setIsOpen] = useState(false);
   
   // ফর্ম সাবমিট শেষে ডাইনামিক ডেটা সেভ করার স্টেট
-  const [company, setCompany] = useState(null);
+  const [company, setCompany] = useState(RecruiterCompany);
 
   const [industry, setIndustry] = useState("");
   const [employeeRange, setEmployeeRange] = useState("");

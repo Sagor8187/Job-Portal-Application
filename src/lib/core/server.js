@@ -3,6 +3,12 @@
 // http://localhost:5000/api/jobs?companyId=dj1234&status=active
 const baseurl = process.env.BASE_URL
 
+
+export const serverfetch = async(path)=>{
+    const res = await fetch(`${baseurl}${path}`)
+    return res.json()
+}
+
 export const servermutation = async(path,data)=>{
     const res  = await fetch(`${baseurl}${path}`,{
          method:"POST",

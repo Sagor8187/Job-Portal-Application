@@ -1,12 +1,16 @@
 import { getUserSession } from "@/lib/core/getSession";
 import CompanyRegistration from "./CompanyRegistration";
+import { getRecruiterCompany } from "@/lib/api/company";
 
 export default async function Registrationpage() {
   const user =await getUserSession()
-  console.log(user)
+  // console.log(user)
+  const company =await getRecruiterCompany(user?.id)
+  console.log(company)
+
   return (
     <div>
-      <CompanyRegistration user= {user}></CompanyRegistration>
+      <CompanyRegistration RecruiterCompany = {company} user= {user}></CompanyRegistration>
     </div>
   )
 }
