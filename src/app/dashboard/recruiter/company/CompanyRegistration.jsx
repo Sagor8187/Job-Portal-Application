@@ -99,7 +99,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
   };
 
   // ১. ফর্ম ডেটা সাবমিট হলে এই ইন্টারফেসটি স্ক্রিনে দেখাবে
-  if (company) {
+  if (company?._id) {
     return (
       <div className="relative max-w-4xl mx-auto bg-[#18181b] border border-[#27272a] rounded-xl p-8 text-white shadow-xl">
         
