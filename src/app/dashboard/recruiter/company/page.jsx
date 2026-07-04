@@ -6,7 +6,7 @@ export default async function Registrationpage() {
   const user =await getUserSession()
   // console.log(user)
   const company =await getRecruiterCompany(user?.id)
-  console.log(company)
+  // console.log(company)
 
   return (
     <div>

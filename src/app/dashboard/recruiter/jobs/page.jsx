@@ -1,10 +1,11 @@
+import { getLogdinRecruiterCompany } from '@/lib/api/company';
 import { companyjob } from '@/lib/api/jobs'
 import { Table, Button, Chip } from "@heroui/react";
 import { FiEye, FiEdit, FiTrash2 } from "react-icons/fi";
 
 export default async function page() {
-  const companyId = "dj1234"
-  const data = await companyjob(companyId)
+  const companyId =await getLogdinRecruiterCompany()
+  const data = await companyjob(companyId._id)
 
   // Mapping status to colors for the HeroUI Chip component
   const statusColorMap = {
