@@ -9,6 +9,10 @@ export const alljobs = async ()=>{
     return serverfetch("/api/all/jobs")
 }
 
+export const getjobId = async(jobId)=>{
+    return serverfetch(`/api/all/jobs/${jobId}`)
+}
+
 
 export const companyjob = async(companyId,status ="active")=>{
     const res  = await fetch(`${baseurl}/api/jobs?companyId=${companyId}&status=${status}`)

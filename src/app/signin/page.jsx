@@ -16,11 +16,16 @@ import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SigninForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const searchParams = useSearchParams()
+  const router = useRouter()
+const redirectTo = searchParams.get("redirect") || "/";
+console.log(redirectTo)
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,7 +38,7 @@ export default function SigninForm() {
       email: data.email,
       password: data.password,
       rememberMe: true,
-      callbackURL: "/dashboard",
+      
     });
 
     setLoading(false);
@@ -44,7 +49,8 @@ export default function SigninForm() {
     }
 
     toast.success("Login successful!");
-    console.log("User:", result);
+    // console.log("User:", result);
+     router.push(redirectTo);
   };
 
   return (
@@ -155,7 +161,7 @@ export default function SigninForm() {
 
           <p>
             Don’t have an account?{" "}
-            <Link href="/signup" className="text-indigo-400 hover:text-indigo-300">
+            <Link href={`/signup?redirect=${redirectTo}`} className="text-indigo-400 hover:text-indigo-300">
               Sign up
             </Link>
           </p>

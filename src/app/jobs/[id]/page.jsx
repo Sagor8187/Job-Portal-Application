@@ -1,4 +1,6 @@
 import ApplyButton from '@/component/ApplyButton';
+import { getjobId } from '@/lib/api/jobs';
+import Link from 'next/link';
 import React from 'react';
 import { 
   FaMapPin, 
@@ -12,28 +14,12 @@ import {
 import { IoMdRocket } from 'react-icons/io'; // এখানে IoMdRocket সঠিকভাবে ইমপোর্ট করা হয়েছে
 
 
-// ডাটা অবজেক্ট
-const jobDetails = {
-  "_id": "6a48e7057549e4434edd9493",
-  "jobTitle": "Frontend Developer",
-  "jobCategory": "Engineering",
-  "status": "active",
-  "jobType": "Full-time",
-  "minSalary": "4000",
-  "maxSalary": "6000",
-  "currency": "BDT",
-  "location": "Dhaka, Bangladesh",
-  "applicationDeadline": "2026-07-24",
-  "responsibilities": "Build highly responsive web applications using React and Next.js.\nCollaborate closely with backend teams and designers.\nOptimize UI/UX for maximum performance and scalability.\nMaintain clean, well-documented, and reusable code structures.",
-  "requirements": "Strong expertise in HTML5, CSS3, Tailwind CSS, and Modern JavaScript.\nHands-on experience with React.js or Next.js state management.\nFamiliarity with RESTful API integration and Git workflow.\nGood communication skills and problem-solving mindset.",
-  "benefits": "Competitive salary packages with performance bonuses.\nFlexible working hours and dynamic remote work capabilities.\nWeekly learning sessions and career development budget.\nFestival bonuses and paid annual leaves.",
-  "companyId": "6a4671787172b053c195cec7",
-  "logo": "https://i.ibb.co/3Y1h8C0v/python.png",
-  "companyName": "dj sagor",
-  "isRemote": false
-};
 
-export default async function JobDetailsPage() {
+export default async function JobDetailsPage({params}) {
+    const {id}=await params
+    const jobDetails = await getjobId(id)
+
+
   return (
     <div className="min-h-screen bg-[#09090b] text-[#e0e0e0] font-sans antialiased selection:bg-[#e0aaff] selection:text-black">
       
@@ -144,7 +130,8 @@ export default async function JobDetailsPage() {
                 </div>
               </div>
 
-              <ApplyButton jobTitle={jobDetails.jobTitle} deadline={jobDetails.applicationDeadline} />
+              {/* <ApplyButton jobTitle={jobDetails.jobTitle} deadline={jobDetails.applicationDeadline} /> */}
+              <Link className='bg-white text-black hover:bg-neutral-200 shadow-white/5 font-bold p-2 rounded-md' href={`/jobs/${id}/apply`} >Apply For This Position</Link>
 
               <p className="text-[11px] text-neutral-500 mt-3">By applying, you agree to share your professional resume profile.</p>
             </div>
