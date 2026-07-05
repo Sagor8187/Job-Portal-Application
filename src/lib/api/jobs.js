@@ -1,7 +1,14 @@
 "use server"
 
+import { serverfetch } from "../core/server"
+
 // http://localhost:5000/api/jobs?companyId=dj1234&status=active
 const baseurl = process.env.BASE_URL
+
+export const alljobs = async ()=>{
+    return serverfetch("/api/all/jobs")
+}
+
 
 export const companyjob = async(companyId,status ="active")=>{
     const res  = await fetch(`${baseurl}/api/jobs?companyId=${companyId}&status=${status}`)

@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import React, { useState } from "react";
 import { Select, ListBox, Button, Switch } from "@heroui/react";
 
@@ -128,7 +128,9 @@ export default function CompanyPostForm({companyinfo}) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-3 md:p-6 bg-[#121212]">
+    <>
+    {companyinfo._id?
+    (<div className="flex items-center justify-center min-h-screen p-3 md:p-6 bg-[#121212]">
       <div className="w-full max-w-2xl bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-2xl p-4 sm:p-6 space-y-6">
         {/* HEADER BLOCK */}
         <div>
@@ -588,6 +590,25 @@ export default function CompanyPostForm({companyinfo}) {
           </div>
         </form>
       </div>
-    </div>
+    </div>):(
+  <div className="flex flex-col items-center justify-center min-h-[70vh]">
+    <h2 className="text-2xl font-bold text-white">
+      Please Register Your Company First
+    </h2>
+
+    <p className="text-gray-400 mt-2">
+      You need to register your company before posting a job.
+    </p>
+
+    <Link
+      href="/dashboard/recruiter/company"
+      className="mt-6 px-5 py-2 bg-white text-black rounded-lg font-medium"
+    >
+      Register Company
+    </Link>
+  </div>
+)
+    }
+    </>
   );
 }
