@@ -39,7 +39,7 @@ export default async function page({params}) {
 }
 
 const jobInfo = await getjobId(id)
-console.log(jobInfo)
+// console.log(jobInfo)
 
 
   return (
