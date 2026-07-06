@@ -12,6 +12,7 @@ import {
   Description, 
   Button 
 } from "@heroui/react";
+import { jobapply } from "@/lib/api/application";
 
 export default function JobApply({ applicant, jobdata }) {
   const [name, setName] = useState(applicant?.name || "");
@@ -20,36 +21,41 @@ export default function JobApply({ applicant, jobdata }) {
   const [expectedSalary, setExpectedSalary] = useState("");
   const [experience, setExperience] = useState("");
   const [resumeLink, setResumeLink] = useState("");
+  const [portfolioLink, setPortfolioLink] = useState(""); 
   const [coverLetter, setCoverLetter] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // ভ্যালিডেশন লজিক
+  // that is validation logic
   const isNameInvalid = name.length > 0 && name.length < 3;
   const isEmailInvalid = email.length > 0 && !/\S+@\S+\.\S+/.test(email);
   const isPhoneInvalid = phone.length > 0 && phone.length < 11;
   const isResumeInvalid = resumeLink.length > 0 && !/^https?:\/\/.+/.test(resumeLink);
+  const isPortfolioInvalid = portfolioLink.length > 0 && !/^https?:\/\/.+/.test(portfolioLink); 
   const isCoverLetterInvalid = coverLetter.length > 0 && coverLetter.length < 20;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (isNameInvalid || isEmailInvalid || isPhoneInvalid || isResumeInvalid || isCoverLetterInvalid || !experience) {
+    if (isNameInvalid || isEmailInvalid || isPhoneInvalid || isResumeInvalid || isPortfolioInvalid || isCoverLetterInvalid || !experience) {
       alert("Please fix the validation errors before submitting.");
       return;
     }
 
     setIsLoading(true);
-    console.log("Submitted:", { name, email, phone, expectedSalary, experience, resumeLink, coverLetter });
     
-    setTimeout(() => {
+    const applicantData = { name, email, phone, expectedSalary, experience, resumeLink, portfolioLink, coverLetter }
+    const res =await jobapply(applicantData)
+    // console.log(res)
+    // console.log("Submitted:", { name, email, phone, expectedSalary, experience, resumeLink, portfolioLink, coverLetter });
+    
+    // setTimeout(() => {
       setIsLoading(false);
-      alert("Application submitted successfully!");
-    }, 1500);
+    //   alert("Application submitted successfully!");
+    // }, 1500);
   };
 
   return (
-    // ডার্ক থিম অ্যাপ্লাই করার জন্য এখানে 'dark' ক্লাস এবং ডার্ক ব্যাকগ্রাউন্ড দেওয়া হয়েছে
     <div className="min-h-screen w-full bg-zinc-950">
       <div className="dark max-w-2xl mx-auto p-6 bg-zinc-900 text-zinc-100 rounded-xl shadow-xl border border-zinc-800 my-10">
       <div className="mb-6">
@@ -98,7 +104,7 @@ export default function JobApply({ applicant, jobdata }) {
               isRequired
               className="w-full"
               selectedKeys={experience ? [experience] : []}
-              onSelectionChange={(keys) => setExperience(Array.from(keys)[0] || "")}
+              onSelectionChange={(key) => setExperience(key?.toString() || "")}
             >
               <Label className="text-zinc-300">Experience Level</Label>
               <Select.Trigger className="w-full bg-zinc-800 text-white border-zinc-700 flex justify-between items-center px-3 py-2 rounded-lg">
@@ -108,9 +114,9 @@ export default function JobApply({ applicant, jobdata }) {
               <Select.Popover>
                 <ListBox className="bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl text-white">
                   <ListBox.Item id="fresher" className="hover:bg-zinc-700 p-2 rounded">Fresher</ListBox.Item>
-                  <ListBox.Item id="1-2" className="hover:bg-zinc-700 p-2 rounded">1-2 Years</ListBox.Item>
-                  <ListBox.Item id="3-5" className="hover:bg-zinc-700 p-2 rounded">3-5 Years</ListBox.Item>
-                  <ListBox.Item id="5+" className="hover:bg-zinc-700 p-2 rounded">5+ Years</ListBox.Item>
+                  <ListBox.Item id="1-2 years" className="hover:bg-zinc-700 p-2 rounded">1-2 Years</ListBox.Item>
+                  <ListBox.Item id="3-5 years" className="hover:bg-zinc-700 p-2 rounded">3-5 Years</ListBox.Item>
+                  <ListBox.Item id="5+ years" className="hover:bg-zinc-700 p-2 rounded">5+ Years</ListBox.Item>
                 </ListBox>
               </Select.Popover>
             </Select>
@@ -125,6 +131,17 @@ export default function JobApply({ applicant, jobdata }) {
             <FieldError className="text-danger">Please enter a valid URL starting with http:// or https://</FieldError>
           ) : (
             <Description className="text-zinc-500">Make sure the link sharing option is set to Public.</Description>
+          )}
+        </TextField>
+
+        {/* Portfolio or Website URL Section */}
+        <TextField isInvalid={isPortfolioInvalid} value={portfolioLink} onChange={setPortfolioLink}>
+          <Label className="text-zinc-300">Portfolio or Website URL</Label>
+          <Input placeholder="https://yourportfolio.com" className="bg-zinc-800 text-white border-zinc-700" />
+          {isPortfolioInvalid ? (
+            <FieldError className="text-danger">Please enter a valid URL starting with http:// or https://</FieldError>
+          ) : (
+            <Description className="text-zinc-500">Share your personal website, GitHub, or Behance profile.</Description>
           )}
         </TextField>
 

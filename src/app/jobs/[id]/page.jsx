@@ -11,7 +11,7 @@ import {
   FaChevronRight,
   FaCheckCircle
 } from 'react-icons/fa';
-import { IoMdRocket } from 'react-icons/io'; // এখানে IoMdRocket সঠিকভাবে ইমপোর্ট করা হয়েছে
+import { IoMdRocket } from 'react-icons/io'; 
 
 
 

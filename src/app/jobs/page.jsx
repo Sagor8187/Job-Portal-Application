@@ -8,7 +8,7 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-[#09090b]">
-      {/* ক্লায়েন্ট কম্পোনেন্টে সার্ভার থেকে আসা ডাটা পাস করা হচ্ছে */}
+      {/* data pass in client component form server */}
       <JobDashboard initialJobs={jobs} />
     </main>
   );

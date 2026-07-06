@@ -7,10 +7,10 @@ import { Modal, Button, Select, ListBox } from "@heroui/react";
 import { createcompany } from "@/lib/core/company";
 
 export default function CompanyRegistration({user,RecruiterCompany}) {
-  // useDisclosure এর বদলে প্লেইন রিয়্যাক্ট স্টেট ব্যবহার করা হলো
+  // use state for modal open and close 
   const [isOpen, setIsOpen] = useState(false);
   
-  // ফর্ম সাবমিট শেষে ডাইনামিক ডেটা সেভ করার স্টেট
+  // after from submit all data save this state
   const [company, setCompany] = useState(RecruiterCompany);
 
   const [industry, setIndustry] = useState("");
@@ -18,7 +18,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
   const [logo, setLogo] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // লোগো সিলেক্ট করার সময় সাইজ ভ্যালিডেশন (Max 5MB)
+  // logo select max mb validation
   const handleLogoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -34,7 +34,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
     setLogo(file);
   };
 
-  // ImgBB-তে ইমেজ আপলোড করার ফাংশন
+  // upload in ImgBB 
   const uploadImageToImageBB = async (file) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -56,7 +56,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
     return data.data.url;
   };
 
-  // ফর্ম সাবমিট হ্যান্ডলার
+  // form submit handaler
   const handleSubmit = async (e, closeForm) => {
     e.preventDefault();
 
@@ -98,12 +98,12 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
     }
   };
 
-  // ১. ফর্ম ডেটা সাবমিট হলে এই ইন্টারফেসটি স্ক্রিনে দেখাবে
+  // when already copmany registration 
   if (company?._id) {
     return (
       <div className="relative max-w-4xl mx-auto bg-[#18181b] border border-[#27272a] rounded-xl p-8 text-white shadow-xl">
         
-        {/* EDIT BUTTON: একদম টপ এবং রাইট পজিশনে প্লেস করা হয়েছে */}
+        {/* EDIT BUTTON */}
         <button 
           onClick={() => setIsOpen(true)}
           className="absolute top-6 right-6 flex items-center gap-2 bg-[#27272a] hover:bg-[#3f3f46] text-gray-200 text-xs font-medium px-3 py-1.5 rounded-lg border border-[#3f3f46] transition-colors"
@@ -131,7 +131,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
           </div>
         </div>
 
-        {/* কোম্পানি মেটা ইনফো গ্রিড */}
+        
         <div className="grid md:grid-cols-3 gap-6 mt-6">
           <div className="flex items-center gap-3 bg-black/30 p-4 rounded-lg border border-[#27272a]">
             <FiMapPin className="text-xl text-gray-400" />
@@ -190,7 +190,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
     );
   }
 
-  // ২. প্রথম অবস্থায় (যখন কোনো কোম্পানি রেজিষ্টার্ড নেই) এই ডিফল্ট ভিউটি দেখাবে
+  // whitout registration company show this ui
   return (
     <>
       <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-8 text-center max-w-md mx-auto">
@@ -226,7 +226,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
   );
 }
 
-// মোডালের কোডটি ক্লিন ও আন-চেঞ্জড রাখার জন্য একটি ইন্টারনাল সাব-কম্পোনেন্ট হিসেবে ডিফাইন করা হলো
+// clone modal
 function ModalIsOpenWrapper({ 
   isOpen, setIsOpen, handleSubmit, loading, industry, setIndustry, 
   employeeRange, setEmployeeRange, handleLogoChange, logo, company 
