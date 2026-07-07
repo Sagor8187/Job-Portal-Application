@@ -2,6 +2,8 @@ import { getUserSession } from "@/lib/core/getSession"
 import { redirect } from "next/navigation"
 import JobApply from "./JobApply"
 import { getjobId } from "@/lib/api/jobs"
+import { getApplicationByApplicant } from "@/lib/api/application"
+import Link from "next/link"
 
 export default async function page({params}) {
     const {id} =await params
@@ -38,13 +40,28 @@ export default async function page({params}) {
   );
 }
 
+const plan = {
+  name:"free",
+  maxApplicaitonPermonth : 3
+}
+
+const appllicant =await getApplicationByApplicant(user.id)
+console.log(appllicant.result)
+
 const jobInfo = await getjobId(id)
 // console.log(jobInfo)
 
 
+
   return (
-    <div>
-        <JobApply applicant={user} jobdata={jobInfo} ></JobApply>
+    <div className="bg-black">
+      <p className="text-white">you current apply {appllicant?.result.length} out of {plan.maxApplicaitonPermonth}</p>
+      {appllicant?.result.length < plan.maxApplicaitonPermonth? <JobApply applicant={user} jobdata={jobInfo} ></JobApply>:
+      <div className="text-white">
+        <p>Your free plan is over plese purchage our premeum service</p>
+        <Link  href="/pricing">our Plan</Link>
+        </div>}
+        
     </div>
   )
 }

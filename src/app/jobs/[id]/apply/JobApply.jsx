@@ -44,16 +44,29 @@ export default function JobApply({ applicant, jobdata }) {
 
     setIsLoading(true);
     
-    const applicantData = { name, email, phone, expectedSalary, experience, resumeLink, portfolioLink, coverLetter }
+    const applicantData = {
+       name, 
+       email,
+        phone,
+         expectedSalary, 
+         experience,
+          resumeLink,
+           portfolioLink,
+            coverLetter,
+            applicantId:applicant.id,
+            jobId:jobdata._id
+          }
     const res =await jobapply(applicantData)
-    // console.log(res)
-    // console.log("Submitted:", { name, email, phone, expectedSalary, experience, resumeLink, portfolioLink, coverLetter });
+    // console.log(jobdata._id)
+
+    // console.log("Submitted:",{ name, email, phone, expectedSalary, experience, resumeLink, portfolioLink, coverLetter });
     
     // setTimeout(() => {
       setIsLoading(false);
     //   alert("Application submitted successfully!");
     // }, 1500);
   };
+  
 
   return (
     <div className="min-h-screen w-full bg-zinc-950">
