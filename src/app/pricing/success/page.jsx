@@ -5,6 +5,7 @@ import { IoCheckmarkCircleSharp } from 'react-icons/io5'
 import { HiOutlineMail, HiOutlineReceiptTax } from 'react-icons/hi'
 import { FiShoppingBag, FiCopy } from 'react-icons/fi'
 import { FaArrowRight, FaCreditCard } from 'react-icons/fa6'
+import { createSubcription } from '@/lib/actions/subcription'
 
 export default async function Success({ searchParams }) {
   const { session_id } = await searchParams
@@ -35,6 +36,11 @@ export default async function Success({ searchParams }) {
   }
 
   if (status === 'complete') {
+    const subInfo = {
+        email : customerEmail,
+        plan_Id:session?.metadata?.plan_Id
+    }
+    const res = await createSubcription(subInfo)
     return (
       <section className="min-h-screen flex items-center justify-center bg-slate-50/50 px-4 py-12 antialiased">
         <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-100 p-6 sm:p-8 text-center border border-slate-100/80">
