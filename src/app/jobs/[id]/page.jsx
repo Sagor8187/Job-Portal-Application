@@ -19,7 +19,6 @@ export default async function JobDetailsPage({params}) {
     const {id}=await params
     const jobDetails = await getjobId(id)
 
-
   return (
     <div className="min-h-screen bg-[#09090b] text-[#e0e0e0] font-sans antialiased selection:bg-[#e0aaff] selection:text-black">
       

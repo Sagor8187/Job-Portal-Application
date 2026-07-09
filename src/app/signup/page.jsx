@@ -31,6 +31,8 @@ export default function SignupForm() {
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
+    const plan = data?.role === "seeker"?"seeker-free":"recruiter-free"
+    console.log(plan)
 
     setLoading(true);
 
@@ -40,6 +42,7 @@ export default function SignupForm() {
       password: data.password,
       image: data.imageUrl,
       role: data.role,
+      plan:plan,
       callbackURL: "/signin",
     });
 

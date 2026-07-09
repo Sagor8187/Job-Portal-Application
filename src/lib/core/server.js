@@ -5,7 +5,11 @@ const baseurl = process.env.BASE_URL
 
 
 export const serverfetch = async(path)=>{
-    const res = await fetch(`${baseurl}${path}`)
+    const res = await fetch(`${baseurl}${path}`,{
+        next: {
+    revalidate: 60,
+  },
+    })
     return res.json()
 }
 

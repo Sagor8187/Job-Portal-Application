@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 // Data Structures
 const seekerPlans = [
   {
-    id: "seeker-free",
+    id: "seeker_free",
     name: "Free",
     price: "$0",
     period: "/forever",
@@ -15,7 +15,7 @@ const seekerPlans = [
     popular: false,
   },
   {
-    id: "seeker-pro",
+    id: "seeker_pro",
     name: "Pro",
     price: "$19",
     period: "/month",
@@ -25,7 +25,7 @@ const seekerPlans = [
     popular: true,
   },
   {
-    id: "seeker-premium",
+    id: "seeker_premium",
     name: "Premium",
     price: "$39",
     period: "/month",
@@ -38,7 +38,7 @@ const seekerPlans = [
 
 const recruiterPlans = [
   {
-    id: "recruiter-free",
+    id: "recruiter_free",
     name: "Free",
     price: "$0",
     period: "/forever",
@@ -48,7 +48,7 @@ const recruiterPlans = [
     popular: false,
   },
   {
-    id: "recruiter-growth",
+    id: "recruiter_growth",
     name: "Growth",
     price: "$49",
     period: "/month",
@@ -58,7 +58,7 @@ const recruiterPlans = [
     popular: true,
   },
   {
-    id: "recruiter-enterprise",
+    id: "recruiter_enterprise",
     name: "Enterprise",
     price: "$149",
     period: "/month",
@@ -178,19 +178,19 @@ export default function PricingPage() {
               </div>
 
               <div className="mt-8">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevents double handling if they click button directly
-                    setSelectedPlan(plan.id);
-                  }}
-                  className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
+                <form action="/api/checkout_sessions" method="POST">
+                <input type="hidden" name='plan_id' value={plan.id}/>
+                  <section>
+                    <button type="submit" role="link"  className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                     isSelected
                       ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
                       : 'bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white'
-                  }`}
-                >
-                  {isSelected ? "Selected" : plan.buttonText}
-                </button>
+                  }`}>
+                      Checkout
+                    </button>
+                  </section>
+                </form>
+                
               </div>
             </div>
           )

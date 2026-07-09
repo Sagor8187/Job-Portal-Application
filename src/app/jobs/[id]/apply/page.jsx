@@ -4,16 +4,21 @@ import JobApply from "./JobApply"
 import { getjobId } from "@/lib/api/jobs"
 import { getApplicationByApplicant } from "@/lib/api/application"
 import Link from "next/link"
+import { getPlanId } from "@/lib/api/plan"
 
-const PLAN_LIMITS = {
-  name: "free",
-  maxApplicationsPerMonth: 3
-}
+
 
 export default async function Page({ params }) {
   const { id } = await params
   const user = await getUserSession()
 
+//   const PLAN_LIMITS = {
+//   name: "free",
+//   maxApplicationsPerMonth: 3
+// }
+
+const PLAN_LIMITS = await getPlanId(user?.plan || "seeker_free")
+// console.log(PLAN_LIMITS1)
   // 1. Authentication Guard
   if (!user?.name) {
     redirect(`/signin?redirect=/jobs/${id}/apply`)
