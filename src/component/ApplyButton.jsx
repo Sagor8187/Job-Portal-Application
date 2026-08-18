@@ -9,7 +9,7 @@ export default function ApplyButton({ jobTitle, deadline }) {
   const handleApply = () => {
     setIsApplied(true);
     
-    // ডার্ক অ্যান্ড প্রিমিয়াম থিম ম্যাচিং টোস্ট নোটিফিকেশন
+  
     toast.success(`Successfully applied for ${jobTitle}!`, {
       duration: 4000,
       style: {
