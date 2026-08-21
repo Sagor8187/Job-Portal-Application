@@ -5,23 +5,36 @@ import Link from "next/link";
 import { FaBars, FaTimes, FaRocket } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
 
-// Navlinks Array of Objects
-const navLinks = [
+// Base nav links
+const initialNavLinks = [
   { name: "Browse Jobs", href: "/jobs" },
   { name: "Company", href: "/company" },
   { name: "Pricing", href: "/pricing" },
 ];
 
-
+const dashboardLinks = {
+  seeker: "/dashboard/seeker",
+  recruiter: "/dashboard/recruiter",
+};
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
 
   const { data: session, isPending } = authClient.useSession();
 
   const handleSignOut = async () => {
     await authClient.signOut();
   };
+  const navLinks = [...initialNavLinks];
+
+  if (session?.user) {
+    const userRole = session.user?.role || "seeker";
+    navLinks.push({
+      name: "Dashboard",
+      href: dashboardLinks[userRole] || "/dashboard/seeker",
+    });
+  }
 
   return (
     <nav className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-gray-800/40 bg-[#0d0d0d]/95 px-4 py-4 text-white backdrop-blur-md md:px-8">
@@ -55,7 +68,7 @@ export default function Navbar() {
 
           <div className="h-4 w-[1px] bg-gray-700/60"></div>
 
-          {/* Loading / Auth state */}
+          {/* Auth State */}
           {isPending ? (
             <span className="text-gray-500">Loading...</span>
           ) : !session ? (

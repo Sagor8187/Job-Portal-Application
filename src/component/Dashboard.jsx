@@ -1,28 +1,66 @@
+import { getUserSession } from "@/lib/core/getSession";
 import {
   Bars,
   Bell,
   Envelope,
   Gear,
   House,
-  Magnifier,
   Person,
+  LayoutCellsLarge,
+  Magnifier,
+  Bookmark,
+  FileText,
+  CreditCard,
+ 
 } from "@gravity-ui/icons";
 import { Button, Drawer } from "@heroui/react";
 import Link from "next/link";
+import { use } from "react";
 
-export function Dashboard() {
-const navItems = [
-  { icon: House, label: "Home", href: "/dashboard/recruiter" },
-  { icon: Magnifier, label: "Jobs", href: "/dashboard/recruiter/jobs" },
-  { icon: Bell, label: "Post Job", href: "/dashboard/recruiter/jobs/new" },
-  { icon: Bell, label: "Company profile", href: "/dashboard/recruiter/company" },
-  { icon: Envelope, label: "Messages", href: "/dashboard/messages" },
-  { icon: Person, label: "Profile", href: "/dashboard/profile" },
-  { icon: Gear, label: "Settings", href: "/dashboard/settings" },
-];
+export async function Dashboard() {
+  const user = await getUserSession()
 
-const navside = (
-<nav className="flex flex-col gap-1 h-screen bg-black text-white p-4 w-64 border-r border-zinc-800">
+  const recruiternavItems = [
+    { icon: House, label: "Home", href: "/dashboard/recruiter" },
+    { icon: Magnifier, label: "Jobs", href: "/dashboard/recruiter/jobs" },
+    { icon: Bell, label: "Post Job", href: "/dashboard/recruiter/jobs/new" },
+    {
+      icon: Bell,
+      label: "Company profile",
+      href: "/dashboard/recruiter/company",
+    },
+    { icon: Envelope, label: "Messages", href: "/dashboard/messages" },
+    { icon: Person, label: "Profile", href: "/dashboard/profile" },
+    { icon: Gear, label: "Settings", href: "/dashboard/settings" },
+  ];
+
+  const seekerNavItems = [
+    { icon: LayoutCellsLarge, label: "Dashboard", href: "/dashboard/seeker" },
+    { icon: Magnifier, label: "Jobs", href: "/dashboard/seeker/jobs" },
+    {
+      icon: Bookmark,
+      label: "Saved Jobs",
+      href: "/dashboard/seeker/saved-jobs",
+    },
+    {
+      icon: FileText,
+      label: "Applications",
+      href: "/dashboard/seeker/applications",
+    },
+    { icon: CreditCard, label: "Billing", href: "/dashboard/seeker/billing" },
+    { icon: Gear, label: "Settings", href: "/dashboard/settings" },
+  ];
+
+  
+  const mapdashboard={
+    seeker: seekerNavItems,
+    recruiter :recruiternavItems
+  }
+
+  let navItems = mapdashboard[use?.role || "seeker"];
+
+  const navside = (
+    <nav className="flex flex-col gap-1 h-screen bg-black text-white p-4 w-64 border-r border-zinc-800">
       {navItems.map((item) => (
         <Link
           key={item.label}
@@ -34,14 +72,12 @@ const navside = (
         </Link>
       ))}
     </nav>
-);
+  );
 
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden md:block">
-        {navside}
-      </div>
+      <div className="hidden md:block">{navside}</div>
 
       {/* Mobile Drawer */}
       <Drawer>
@@ -64,9 +100,7 @@ const navside = (
                 </Drawer.Heading>
               </Drawer.Header>
 
-              <Drawer.Body className="p-0">
-                {navside}
-              </Drawer.Body>
+              <Drawer.Body className="p-0">{navside}</Drawer.Body>
             </Drawer.Dialog>
           </Drawer.Content>
         </Drawer.Backdrop>
