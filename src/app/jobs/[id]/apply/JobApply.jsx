@@ -54,7 +54,8 @@ export default function JobApply({ applicant, jobdata }) {
            portfolioLink,
             coverLetter,
             applicantId:applicant.id,
-            jobId:jobdata._id
+            jobId:jobdata._id,
+            status:"applied"
           }
     const res =await jobapply(applicantData)
     // console.log(jobdata._id)

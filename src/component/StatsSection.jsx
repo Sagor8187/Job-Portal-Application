@@ -97,8 +97,8 @@ export default function HeroStatsSection() {
         </div>
 
         {/* TRENDING TAGS */}
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <span className="text-xs text-neutral-500">Trending:</span>
+        <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
+          <span className="text-white font-bold text-xl">Trending:</span>
           {["Product Designer", "AI Engineering", "DevOps Engineer"].map((tag) => (
             <button
               key={tag}
