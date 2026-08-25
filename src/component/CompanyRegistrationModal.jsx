@@ -11,7 +11,7 @@ import {
 } from "@heroui/react";
 
 export default function CompanyRegistrationModal({
-  open, // এই প্রপটি আপনি প্যারেন্ট থেকে 'open' হিসেবেই পাঠাচ্ছেন, সেটা ঠিক আছে
+  open, 
   onClose,
 }) {
   const [industry, setIndustry] = useState("");
@@ -60,6 +60,7 @@ export default function CompanyRegistrationModal({
         industry,
         employeeRange,
         logo: logoUrl,
+        status:"Pending",
         createdAt: new Date(),
       };
 
@@ -75,8 +76,7 @@ export default function CompanyRegistrationModal({
   };
 
   return (
-    // 1. open এর জায়গায় isOpen ব্যবহার করা হয়েছে
-    // 2. onOpenChange এ onClose সরাসরি পাস করা হয়েছে অথবা (open) => !open ? onClose() : null করতে পারেন
+    
     <Modal isOpen={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
       <Modal.Backdrop />
 

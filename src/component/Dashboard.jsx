@@ -16,7 +16,6 @@ import {
 } from "@gravity-ui/icons";
 import { Button, Drawer } from "@heroui/react";
 import Link from "next/link";
-import { use } from "react";
 
 export async function Dashboard() {
   const user = await getUserSession()

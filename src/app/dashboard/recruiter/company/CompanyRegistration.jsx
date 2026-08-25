@@ -78,7 +78,8 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
         employeeRange, 
         logo: logoUrl,
         createdAt: new Date(),
-        recruiterId:user.id
+        recruiterId:user.id,
+        status:"Pending"
       };
 
       setCompany(companyData);
@@ -124,6 +125,7 @@ export default function CompanyRegistration({user,RecruiterCompany}) {
             </div>
           )}
           <div>
+            <p className="text-orange-600 font-bold ">{company.status}</p>
             <h1 className="text-2xl font-bold pr-24">{company.companyName}</h1>
             <p className="text-gray-400 text-sm flex items-center gap-2 mt-1">
               <FiBriefcase className="text-gray-500" /> {company.industry || "Not Specified"}

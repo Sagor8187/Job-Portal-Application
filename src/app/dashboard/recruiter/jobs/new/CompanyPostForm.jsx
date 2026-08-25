@@ -8,12 +8,14 @@ import {
   FiBriefcase,
   FiDollarSign,
   FiCalendar,
+  FiClock, FiAlertTriangle
 } from "react-icons/fi";
 import { createjob } from "@/lib/actions/jobs";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 
 export default function CompanyPostForm({companyinfo}) {
+  // console.log(companyinfo)
   // Retain minimal UI states needed for interaction logic
   const [isRemote, setIsRemote] = useState(false);
   const [jobCategory, setJobCategory] = useState("");
@@ -129,8 +131,8 @@ export default function CompanyPostForm({companyinfo}) {
 
   return (
     <>
-    {companyinfo._id?
-    (<div className="flex items-center justify-center min-h-screen p-3 md:p-6 bg-[#121212]">
+
+    {companyinfo.status ==="Approved" && <div className="flex items-center justify-center min-h-screen p-3 md:p-6 bg-[#121212]">
       <div className="w-full max-w-2xl bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-2xl p-4 sm:p-6 space-y-6">
         {/* HEADER BLOCK */}
         <div>
@@ -590,8 +592,37 @@ export default function CompanyPostForm({companyinfo}) {
           </div>
         </form>
       </div>
-    </div>):(
-  <div className="flex flex-col items-center justify-center min-h-[70vh]">
+    </div>}
+  {companyinfo?.status !== "Approved" && (
+  <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-[#18181b] p-6 shadow-xl backdrop-blur-xl my-6">
+    {/* Background Ambient Glow */}
+    <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
+
+    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+      {/* Icon Badge */}
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400 shadow-inner">
+        <FiClock className="text-xl" />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 space-y-1">
+        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+          <h3 className="text-base font-semibold text-white">
+            Waiting For Admin Approval
+          </h3>
+          <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400 capitalize">
+            {companyinfo?.status || "Pending"}
+          </span>
+        </div>
+        <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+          Your company profile is currently under review by our admin team. Full dashboard features will be unlocked once approved.
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
+    {!companyinfo && <div className="flex flex-col items-center justify-center min-h-[70vh]">
     <h2 className="text-2xl font-bold text-white">
       Please Register Your Company First
     </h2>
@@ -606,9 +637,9 @@ export default function CompanyPostForm({companyinfo}) {
     >
       Register Company
     </Link>
-  </div>
-)
-    }
+  </div>}
+  
+    
     </>
   );
 }
