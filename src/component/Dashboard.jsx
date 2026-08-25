@@ -7,6 +7,7 @@ import {
   House,
   Person,
   LayoutCellsLarge,
+  Briefcase,
   Magnifier,
   Bookmark,
   FileText,
@@ -51,13 +52,24 @@ export async function Dashboard() {
     { icon: Gear, label: "Settings", href: "/dashboard/settings" },
   ];
 
+
+   const adminNavItems = [
+  { icon: LayoutCellsLarge, label: "Dashboard", href: "/dashboard/admin" },
+  { icon: Person, label: "Users", href: "/dashboard/admin/users" },
+  { icon: House, label: "Companies", href: "/dashboard/admin/companies" },
+  { icon: Briefcase, label: "Jobs", href: "/dashboard/admin/jobs" },
+  { icon: CreditCard, label: "Payments", href: "/dashboard/admin/payments" },
+  { icon: Gear, label: "Settings", href: "/dashboard/settings"},
+];
   
   const mapdashboard={
     seeker: seekerNavItems,
-    recruiter :recruiternavItems
+    recruiter :recruiternavItems,
+    admin:adminNavItems
   }
 
-  let navItems = mapdashboard[use?.role || "seeker"];
+  let navItems = mapdashboard[user?.role || "seeker"];
+
 
   const navside = (
     <nav className="flex flex-col gap-1 h-screen bg-black text-white p-4 w-64 border-r border-zinc-800">
