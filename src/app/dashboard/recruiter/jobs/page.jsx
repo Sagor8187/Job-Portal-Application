@@ -6,6 +6,7 @@ import { FiEye, FiEdit, FiTrash2 } from "react-icons/fi";
 export default async function page() {
   const companyId =await getLogdinRecruiterCompany()
   const data = await companyjob(companyId._id)
+  console.log(data)
 
   // Mapping status to colors for the HeroUI Chip component
   const statusColorMap = {
