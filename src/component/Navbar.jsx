@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // Import usePathname
 import { FaBars, FaTimes, FaRocket } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
 
@@ -15,18 +16,19 @@ const initialNavLinks = [
 const dashboardLinks = {
   seeker: "/dashboard/seeker",
   recruiter: "/dashboard/recruiter",
-  admin:"/dashboard/admin"
+  admin: "/dashboard/admin",
 };
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const pathname = usePathname(); // Get current route path
 
   const { data: session, isPending } = authClient.useSession();
 
   const handleSignOut = async () => {
     await authClient.signOut();
   };
+  
   const navLinks = [...initialNavLinks];
 
   if (session?.user) {
@@ -37,6 +39,7 @@ export default function Navbar() {
     });
   }
 
+  
   return (
     <nav className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-gray-800/40 bg-[#0d0d0d]/95 px-4 py-4 text-white backdrop-blur-md md:px-8">
       {/* Logo */}
@@ -55,34 +58,41 @@ export default function Navbar() {
 
       {/* Desktop Menu */}
       <div className="hidden items-center gap-6 md:flex">
-        <div className="flex items-center gap-6 rounded-full border border-gray-800/50 bg-[#18181b]/60 px-5 py-2 text-[14px] font-medium text-gray-400">
-          {/* Dynamic Nav Links */}
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="transition-colors hover:text-white"
-            >
-              {link.name}
-            </Link>
-          ))}
+        <div className="flex items-center gap-2 rounded-full border border-gray-800/50 bg-[#18181b]/60 px-4 py-2 text-[14px] font-medium text-gray-400">
+          {/* Dynamic Nav Links with Active State */}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-full px-3 py-1.5 transition-all duration-300 ${
+                  isActive
+                    ? "bg-gray-700/60 text-white shadow-sm"
+                    : "hover:bg-gray-800/40 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
 
-          <div className="h-4 w-[1px] bg-gray-700/60"></div>
+          <div className="mx-2 h-4 w-[1px] bg-gray-700/60"></div>
 
           {/* Auth State */}
           {isPending ? (
-            <span className="text-gray-500">Loading...</span>
+            <span className="px-3 text-gray-500">Loading...</span>
           ) : !session ? (
             <Link
               href="/signin"
-              className="font-semibold text-[#5b51d8] transition-colors hover:text-[#6c63ff]"
+              className="px-3 font-semibold text-[#5b51d8] transition-colors hover:text-[#6c63ff]"
             >
               Sign In
             </Link>
           ) : (
             <button
               onClick={handleSignOut}
-              className="font-semibold text-red-400 transition-colors hover:text-red-500"
+              className="px-3 font-semibold text-red-400 transition-colors hover:text-red-500"
             >
               Sign Out
             </button>
@@ -105,7 +115,7 @@ export default function Navbar() {
                   "https://ui-avatars.com/api/?name=User"
                 }
                 alt="Profile"
-                className="h-10 w-10 rounded-full border border-gray-700 object-cover"
+                className="h-10 w-10 rounded-full border border-gray-700 object-cover ring-2 ring-transparent transition-all hover:ring-[#7B2CBF]"
               />
             </div>
           </Link>
@@ -124,35 +134,44 @@ export default function Navbar() {
       <div
         className={`absolute left-0 top-full w-full overflow-hidden border-b border-gray-800 bg-[#0d0d0d] shadow-2xl transition-all duration-300 md:hidden ${
           isOpen
-            ? "max-h-[500px] px-6 py-6 opacity-100"
+            ? "max-h-[600px] px-6 py-6 opacity-100"
             : "max-h-0 px-6 py-0 opacity-0"
         }`}
       >
-        <div className="flex flex-col gap-4">
-          {/* Dynamic Mobile Nav Links */}
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="border-b border-gray-900 py-2 text-base text-gray-300 hover:text-white"
-            >
-              {link.name}
-            </Link>
-          ))}
+        <div className="flex flex-col gap-3">
+          {/* Dynamic Mobile Nav Links with Active State */}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`rounded-lg px-4 py-3 text-base transition-colors ${
+                  isActive
+                    ? "bg-[#18181b] font-semibold text-white border-l-2 border-[#9D4EDD]"
+                    : "text-gray-300 hover:bg-[#18181b]/50 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
+
+          <div className="my-2 h-[1px] w-full bg-gray-800/60"></div>
 
           {isPending ? null : !session ? (
             <>
               <Link
                 href="/signin"
                 onClick={() => setIsOpen(false)}
-                className="py-2 text-base font-semibold text-[#5b51d8] hover:text-[#6c63ff]"
+                className="px-4 py-2 text-base font-semibold text-[#5b51d8] hover:text-[#6c63ff]"
               >
                 Sign In
               </Link>
 
               <Link href="/get-started" onClick={() => setIsOpen(false)}>
-                <button className="w-full rounded-xl bg-white py-3 text-sm font-semibold text-black transition-all hover:bg-gray-100">
+                <button className="mt-2 w-full rounded-xl bg-white py-3 text-sm font-semibold text-black transition-all hover:bg-gray-100">
                   Get Started
                 </button>
               </Link>
@@ -162,7 +181,7 @@ export default function Navbar() {
               <Link
                 href="/profile"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 border-b border-gray-900 py-2"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 hover:bg-[#18181b]/50 transition-colors"
               >
                 <img
                   src={
@@ -172,7 +191,6 @@ export default function Navbar() {
                   alt="Profile"
                   className="h-10 w-10 rounded-full border border-gray-700 object-cover"
                 />
-
                 <div>
                   <p className="text-sm font-medium text-white">
                     {session?.user?.name}
@@ -188,7 +206,7 @@ export default function Navbar() {
                   await handleSignOut();
                   setIsOpen(false);
                 }}
-                className="w-full rounded-xl bg-red-500 py-3 text-sm font-semibold text-white transition-all hover:bg-red-600"
+                className="mt-2 w-full rounded-xl bg-red-500/10 py-3 text-sm font-semibold text-red-500 transition-all hover:bg-red-500 hover:text-white"
               >
                 Sign Out
               </button>
