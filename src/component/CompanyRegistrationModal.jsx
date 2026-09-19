@@ -64,7 +64,7 @@ export default function CompanyRegistrationModal({
         createdAt: new Date(),
       };
 
-      console.log(companyData);
+      // console.log(companyData);
       toast.success("Company Registered Successfully");
       onClose();
     } catch (error) {
