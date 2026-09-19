@@ -29,8 +29,8 @@ export default function CompanyTableClient({ initialCompanies = [] }) {
 
   const handleConfirmStatus = async (companyId) => {
     const senddata = await updatecompany(companyId,{ status: targetStatus })
-    console.log(targetStatus)
-    console.log(senddata)
+    // console.log(targetStatus)
+    // console.log(senddata)
   }
 
   return (

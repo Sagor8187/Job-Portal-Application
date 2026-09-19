@@ -4,7 +4,7 @@ import { getUserToken } from "./getSession"
 
 const authHeader = async()=>{
     const token = await getUserToken()
-  console.log("Extracted Token:", token)
+//   console.log("Extracted Token:", token)
     const header =token? {
         authorization : `Bearer ${token}`
     }:{};
@@ -23,6 +23,17 @@ export const serverfetch = async(path)=>{
     return res.json()
 }
 
+// seceure server fetch 
+
+export const protectedfetch = async(path)=>{
+    const res = await fetch(`${baseurl}${path}`,{
+        headers:{
+         ...await authHeader()
+        },
+  
+    })
+    return res.json()
+}
 
 
 export const servermutation = async(path,data,method="POST")=>{

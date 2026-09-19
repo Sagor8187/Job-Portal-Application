@@ -1,11 +1,11 @@
-import { serverfetch } from "@/lib/core/server";
+import { protectedfetch, serverfetch } from "@/lib/core/server";
 import CompanyTableClient from "./CompanyTableClient";
 
 
 
 
 export default async function AdminCompanyPage() {
-  const initialCompanies = await serverfetch("/api/allcompanies")
+  const initialCompanies = await protectedfetch("/api/allcompanies")
 
   return (
     <div className="p-8 bg-zinc-950 min-h-screen text-white">
